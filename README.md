@@ -9,7 +9,7 @@ Este projeto visa o desenvolvimento de uma interface com a aplicação da API Ge
 # GeoPrevent 
 
 Diagrama ER do projeto
-![diagrama](DiagramaER-APIGEMINI.jpeg)
+![diagrama](diagram.jpeg)
 
 
 
