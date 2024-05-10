@@ -8,5 +8,8 @@ Este projeto visa o desenvolvimento de uma interface com a aplicação da API Ge
 ![World](world.gif)
 # GeoPrevent 
 
+Diagrama ER do projeto
+![diagrama](#)
+
 
 
