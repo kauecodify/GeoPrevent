@@ -8,5 +8,11 @@ Este projeto visa o desenvolvimento de uma interface com a aplicação da API Ge
 ![World](world.gif)
 # GeoPrevent 
 
+<style>
+  * {
+    align-items:center;
+  }
+</style>
+
 
 
