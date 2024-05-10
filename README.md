@@ -3,7 +3,7 @@ Este projeto visa o desenvolvimento de uma interface com a aplicação da API Ge
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/kaue-caires/)
 
-![World](w.gif)
+![World](world.gif)
 # GeoPrevent 
 
 
