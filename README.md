@@ -9,7 +9,7 @@ Este projeto visa o desenvolvimento de uma interface com a aplicação da API Ge
 
 ![World](world.gif)
 
-Diagrama ER do projeto
+#Diagrama ER do projeto
 ![diagrama](diagram.jpeg)
 
 
