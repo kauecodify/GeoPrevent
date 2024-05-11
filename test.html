@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <title>GeoPrevent</title>
+  <style>
+    * {
+      text-align: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background-image: url('hi-tech.gif');
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+    }
+
+    header, main, footer {
+      padding: 2px;
+      text-align: center;
+    }
+
+    .keyword-search {
+      display: flex;
+      background-color: rgba(133, 133, 133, 0.5);
+      border-radius: 20px;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+
+    #keyword-input {
+      flex-grow: 1;
+      padding: 10px;
+      border: none;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+
+    #search-button {
+      padding: 10px;
+      background-color: #ddd;
+      border: none;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    #earth-container {
+      width: 100%;
+      height: 500px;
+    }
+
+    #typing-title {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 36px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    #typing-title:after {
+      content: '\2022';
+      animation: blink 1s infinite;
+      color: #fff;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    #control-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #control-button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .nav-img {
+      width: 30px;
+      height: 30px;
+      margin: 5px;
+      cursor: pointer;
+    }
+
+    .nav-left {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .nav-right {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <img src="world.gif" width="150px" height="150px">
+  <header>
+    <h2 id="typing-title"></h2>
+    <a href="https://br.linkedin.com/in/kaue-caires"><img src="linkedin.png" alt="Right Image" class="nav-img nav-right"></a>
+    <a href="Embeddings.ipynb"><img src="colab.jpg" alt="left Image" class="nav-img nav-left"></a>
+    <h5>Previsão de anomalias oceânicas anti-catástrofes</h5>
+  </header>
+  
+  <main>
+    <form class="keyword-search" action="search" method="get">
+      <input type="text" id="keyword-input" name="q" placeholder="Pergunte-me" required>
+      <button type="button" id="search-button">Buscar</button>
+    </form>
+
+    <div id="search-results-tab" style="display: none;">
+      <h3>Pergunte-me</h3>
+      <div id="search-results"></div>
+    </div>
+  
+    <div id="earth-container"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+      var titleText = "GeoPrevent";
+      var titleElement = document.getElementById("typing-title");
+      var i = 0;
+
+      function typeWriter() {
+        if (i < titleText.length) {
+          titleElement.innerHTML += titleText.charAt(i);
+          i++;
+          setTimeout(typeWriter, 100);
+        }
+      }
+
+      window.onload = function() {
+        typeWriter();
+        initMap();
+      };
+
+      function ask() {
+        document.getElementById("earth-container").style.display = "none";
+        document.getElementById("search-results-tab").style.display = "block";
+      }
+
+      function initMap() {
+        var map = L.map('earth-container').setView([-30.0346, -51.2177], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var locations = [
+          { name: "Rio Grande do Sul", coordinates: [-30.0346, -51.2177], risk: "alto" },
+          { name: "New York", coordinates: [40.7128, -74.0060], risk: "médio" },
+          { name: "Tóquio", coordinates: [35.6895, 139.6917], risk: "alto" },
+          { name: "Londres", coordinates: [51.5074, -0.1278], risk: "baixo" },
+          { name: "São Francisco", coordinates: [37.7749, -122.4194], risk: "médio" },
+          { name: "Cidade do México", coordinates: [19.4326, -99.1332], risk: "alto" },
+          { name: "Cidade do Cabo", coordinates: [-33.9249, 18.4241], risk: "médio" },
+          { name: "Sydney", coordinates: [-33.8688, 151.2093], risk: "baixo" },
+          { name: "Cairo", coordinates: [30.0444, 31.2357], risk: "médio" },
+          { name: "Mumbai", coordinates: [19.0760, 72.8777], risk: "alto" },
+          { name: "Los Angeles", coordinates: [34.0522, -118.2437], risk: "médio" },
+          { name: "Manila", coordinates: [14.5995, 120.9842], risk: "alto" },
+          { name: "Moscou", coordinates: [55.7558, 37.6176], risk: "médio" },
+          { name: "Cidade do Vaticano", coordinates: [41.9029, 12.4534], risk: "baixo" },
+          { name: "Bangkok", coordinates: [13.7563, 100.5018], risk: "médio" },
+          { name: "Pequim", coordinates: [39.9042, 116.4074], risk: "alto" },
+          { name: "Rio de Janeiro", coordinates: [-22.9068, -43.1729], risk: "médio" },
+          { name: "Paris", coordinates: [48.8566, 2.3522], risk: "baixo" },
+          { name: "Berlim", coordinates: [52.5200, 13.4050], risk: "médio" },
+          { name: "Hong Kong", coordinates: [22.3193, 114.1694], risk: "alto" },
+          { name: "Istambul", coordinates: [41.0082, 28.9784], risk: "médio" },
+          { name: "Roma", coordinates: [41.9028, 12.4964], risk: "médio" },
+          { name: "Toronto", coordinates: [43.6511, -79.3830], risk: "baixo" },
+          { name: "Chicago", coordinates: [41.8781, -87.6298], risk: "médio" },
+          { name: "Cidade de Ho Chi Minh", coordinates: [10.7769, 106.7009], risk: "médio" },
+          { name: "Munique", coordinates: [48.1351, 11.5820], risk: "baixo" },
+          { name: "Seul", coordinates: [37.5665, 126.9780], risk: "alto" },
+          { name: "Osaka", coordinates: [34.6937, 135.5023], risk: "médio" },
+          { name: "Shanghai", coordinates: [31.2304, 121.4737], risk: "alto" }
+        ];
+
+        locations.forEach(function(location) {
+          var marker = L.marker(location.coordinates).addTo(map)
+            .bindPopup('<b>' + location.name + '</b><br>Risco: ' + location.risk)
+            .openPopup();
+
+          var color = location.risk === "alto" ? "red" : (location.risk === "médio" ? "yellow" : "green");
+
+          L.circle(location.coordinates, {
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.2,
+            radius: 50000
+          }).addTo(map);
+        });
+
+        document.getElementById("control-button").addEventListener("click", function() {
+          alert("Botão de controle do perímetro clicado!");
+        });
+      }
+
+      document.getElementById("search-button").addEventListener("click", function() {
+        var searchTerm = document.getElementById("keyword-input").value;
+        console.log("Buscando por: " + searchTerm);
+      });
+    </script>
+  </main>
+
+  <footer>
+    <p>© 2024 - kauecodify</p>
+  </footer>
+</body>
+</html>
